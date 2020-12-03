@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-const createSchema = (name: string, ...args: any[])=>{
+const createSchema = (name: string, ...args: any[]): Schema=>{
     const schema: any = new Schema(...args);
     schema.name = name;
 

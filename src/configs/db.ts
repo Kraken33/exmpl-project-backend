@@ -13,7 +13,7 @@ const {
   } = process.env;
   
 
-const createMongooseConnection = ({ port = 27017, dbName = 'example' }: any)=>mongoose.connect(`mongodb://localhost:${port}/${dbName}`);
+const createMongooseConnection = ({ port = 27017, dbName = 'example' }: any)=>mongoose.connect(`mongodb://localhost:${port}/${dbName}`, { useNewUrlParser: true });
 
 const dbConnect: any = createMongooseConnection({ port: MONGO_PORT, dbName: MONGO_DB });
 
