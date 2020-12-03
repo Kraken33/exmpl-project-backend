@@ -1,1 +1,1 @@
-export { Controller } from './controllers';
+export { Controller, Middleware } from './controllers';

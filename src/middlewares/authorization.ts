@@ -1,19 +1,19 @@
-import { NextFunction, Response, Request } from "express";
 import { pipe } from "lodash/fp";
 import jwt from "jsonwebtoken";
 
-import { authenticateStorage } from "./authenticate";
+import { app } from '../consts';
+import { authenticateStorage, TokenStoreItem } from "./authenticate";
+import { Middleware } from "../types";
 
-const authorize: any = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+const authorize: Middleware = async (
+  req,
+  res,
+  next
 ) => {
-  const token = req.get("x-token");
-
-  const reqHaveToken = () => !!token;
+  const token = req.get(app.TOKEN_FIELD_NAME);
+  const reqHaveToken = !!token;
   const getAuthenticateKey = (token: string) => authenticateStorage.get(token);
-  const verifyToken = async ({ token, key }: any) =>
+  const verifyToken = async ({ token, key }: TokenStoreItem) =>
     await jwt.verify(token, key);
   const setUserId2Session = (id: string) => (req.session._id = id);
 

@@ -1,4 +1,4 @@
-import { createTerminus as createTerminusModule } from '@godaddy/terminus';
+import { createTerminus as createTerminusModule, TerminusOptions } from '@godaddy/terminus';
 
 import { storage } from './storage';
 
@@ -21,7 +21,7 @@ function healthCheck() {
     ();
 }
 
-const options = {
+const options: TerminusOptions = {
     // health check options
     signal: 'SIGINT',
     healthChecks: {

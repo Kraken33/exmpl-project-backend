@@ -5,18 +5,27 @@ import mongoose from "mongoose";
 //-------------------------------------
 
 const {
-    MONGO_USERNAME,
-    MONGO_PASSWORD,
-    MONGO_HOSTNAME,
-    MONGO_PORT,
-    MONGO_DB
-  } = process.env;
-  
+  // MONGO_USERNAME,
+  // MONGO_PASSWORD,
+  MONGO_HOSTNAME,
+  MONGO_PORT,
+  MONGO_DB,
+} = process.env;
 
-const createMongooseConnection = ({ port = 27017, dbName = 'example' }: any)=>mongoose.connect(`mongodb://localhost:${port}/${dbName}`, { useNewUrlParser: true });
-
-const dbConnect: any = createMongooseConnection({ port: MONGO_PORT, dbName: MONGO_DB });
-
-export {
-  dbConnect
+type DBConfig = {
+  port: string | number;
+  dbName: string;
+  hostName: string;
 };
+const createMongooseConnection = ({ port = 27017, dbName = "example", hostName = "localhost" }: DBConfig) =>
+  mongoose.connect(`mongodb://${hostName}:${port}/${dbName}`, {
+    useNewUrlParser: true,
+  });
+
+const dbConnect: any = createMongooseConnection({
+  port: MONGO_PORT,
+  dbName: MONGO_DB,
+  hostName: MONGO_HOSTNAME
+});
+
+export { dbConnect };

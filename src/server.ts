@@ -1,6 +1,6 @@
+require("dotenv").config();
 import http from "http";
 import errorHandler from "errorhandler";
-import { pipe } from "lodash/fp";
 
 import app from "./app";
 import { dbConnect } from "./configs";
@@ -26,5 +26,5 @@ const startServer = (server: any) => {
     console.log("  Press CTRL-C to stop\n");
   });
 };
- 
+
 dbConnect.then(createServer).then(createTerminus).then(startServer);
