@@ -4,8 +4,9 @@ import { promisify } from "util";
 
 import { User } from "../models";
 import { storage } from "../configs/storage";
-import { app } from '../consts';
+import { app } from "../consts";
 import { Middleware } from "../types";
+import { UserDocument } from "src/models/user";
 
 type TokenStoreItem = {
   token: string;
@@ -29,18 +30,18 @@ const authenticateStorage = {
 };
 
 const authenticate: Middleware = async (req, res, next) => {
-  const currentUser: any = await User.findByLoginAndPassword(req.body);
-  const userIsValid = !!currentUser;
   const saveUserId2Session = (id: string) => (req.session._id = id);
-  const createToken = async ({ key }: any) => await jwt.sign(currentUser, key);
+  const saveToken2Session = (token: string) => (req.session.token = token);
+  const createToken = async ({ payload, key }: any) =>
+    await jwt.sign(payload, key);
   const saveToken = ({ token, key }: TokenStoreItem) =>
     authenticateStorage.save({ token, key });
 
-  const authenticateUser = async () => {
-    saveUserId2Session(currentUser._id);
-
+  const authenticateUser = async (user: UserDocument) => {
     const { key } = await createPrivateKey();
-    const token = await createToken({ key });
+    const token = await createToken({ key, payload: user });
+    saveUserId2Session(user._id);
+    saveToken2Session(token);
     saveToken({ token, key });
 
     res.setHeader(app.TOKEN_FIELD_NAME, token);
@@ -48,8 +49,10 @@ const authenticate: Middleware = async (req, res, next) => {
   };
 
   try {
+    const currentUser: any = await User.findByLoginAndPassword(req.body);
+    const userIsValid = !!currentUser;
     userIsValid
-      ? await authenticateUser()
+      ? await authenticateUser(currentUser)
       : res.status(401).json({ message: "Credentials are not valid!" });
   } catch (e) {
     res.json({

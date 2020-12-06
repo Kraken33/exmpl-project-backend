@@ -1,10 +1,11 @@
 const schemes = {
     USER: 'User',
-    STORAGE: 'Storage'
+    STORAGE: 'Storage',
+    PERMISSION: 'Permission'
 };
 
 const app = {
-    TOKEN_FIELD_NAME: 'x-token',
+    TOKEN_FIELD_NAME: 'X-Token',
     AUTHENTICATE_STORAGE_NAME : 'authenticateStorage'
 };
 

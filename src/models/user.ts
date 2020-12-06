@@ -2,7 +2,7 @@ import { createModel, createSchema } from "../util";
 import { omit } from "lodash/fp";
 import bcrypt from "bcrypt";
 
-import { schemes } from '../consts';
+import { schemes } from "../consts";
 
 type UserDocument = {
   login: string;
@@ -47,13 +47,21 @@ const findByLoginAndPassword = async ({ login, password }: UserDocument) => {
   const conditions = { login };
   const projection = { _id: true, login: true, password: true };
 
-  const currentUser: any = await UserModel.findOne(
-    conditions,
-    projection
-  ).lean();
-  const passwordIsVerify = await bcrypt.compare(password, currentUser.password);
+  try {
+    const currentUser: any = await UserModel.findOne(
+      conditions,
+      projection
+    ).lean();
+    const passwordIsVerify = await bcrypt.compare(
+      password,
+      currentUser.password
+    );
 
-  return passwordIsVerify ? currentUser : null;
+    return passwordIsVerify ? currentUser : null;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
 
 const find = async (id: string) => {
